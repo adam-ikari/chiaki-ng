@@ -6,6 +6,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.AlertDialog
 import android.graphics.Matrix
+import android.hardware.display.DisplayManager
 import android.os.*
 import android.view.*
 import android.widget.EditText
@@ -22,6 +23,7 @@ import com.metallic.chiaki.databinding.ActivityStreamBinding
 import com.metallic.chiaki.lib.ConnectInfo
 import com.metallic.chiaki.lib.ConnectVideoProfile
 import com.metallic.chiaki.session.*
+import com.metallic.chiaki.touchcontrols.ControllerPresentation
 import com.metallic.chiaki.touchcontrols.DefaultTouchControlsFragment
 import com.metallic.chiaki.touchcontrols.TouchControlsFragment
 import com.metallic.chiaki.touchcontrols.TouchpadOnlyFragment
@@ -44,6 +46,7 @@ class StreamActivity : AppCompatActivity(), View.OnSystemUiVisibilityChangeListe
 
 	private lateinit var viewModel: StreamViewModel
 	private lateinit var binding: ActivityStreamBinding
+	private var controllerPresentation: ControllerPresentation? = null
 
 	private val uiVisibilityHandler = Handler()
 
@@ -121,8 +124,9 @@ class StreamActivity : AppCompatActivity(), View.OnSystemUiVisibilityChangeListe
 	override fun onAttachFragment(fragment: Fragment)
 	{
 		super.onAttachFragment(fragment)
-		if(fragment is TouchControlsFragment)
+		if(fragment is TouchControlsFragment && controllerPresentation == null)
 		{
+			// 只有在没有控制器Presentation时才处理主Activity中的Fragment
 			fragment.controllerState
 				.subscribe { viewModel.input.touchControllerState = it }
 				.addTo(controlsDisposable)
@@ -136,18 +140,28 @@ class StreamActivity : AppCompatActivity(), View.OnSystemUiVisibilityChangeListe
 	{
 		super.onResume()
 		hideSystemUI()
+		
+		// 检测第二屏幕并创建控制器Presentation
+		setupControllerPresentation()
+		
 		viewModel.session.resume()
 	}
 
 	override fun onPause()
 	{
 		super.onPause()
+		// 隐藏控制器Presentation
+		controllerPresentation?.dismiss()
+		controllerPresentation = null
 		viewModel.session.pause()
 	}
 
 	override fun onDestroy()
 	{
 		super.onDestroy()
+		// 清理控制器Presentation
+		controllerPresentation?.dismiss()
+		controllerPresentation = null
 		controlsDisposable.dispose()
 	}
 
@@ -211,6 +225,23 @@ class StreamActivity : AppCompatActivity(), View.OnSystemUiVisibilityChangeListe
 				or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 				or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 				or View.SYSTEM_UI_FLAG_FULLSCREEN)
+	}
+	
+	private fun setupControllerPresentation() {
+		// 检查是否有第二屏幕
+		val displayManager = getSystemService(DISPLAY_SERVICE) as DisplayManager
+		val displays = displayManager.displays
+		
+		// 如果有第二屏幕且当前没有创建Presentation
+		if (displays.size > 1 && controllerPresentation == null) {
+			try {
+				controllerPresentation = ControllerPresentation(this, displays[1], viewModel)
+				controllerPresentation?.show()
+			} catch (e: Exception) {
+				// 如果创建Presentation失败，忽略错误
+				controllerPresentation = null
+			}
+		}
 	}
 
 	private var dialogContents: DialogContents? = null
@@ -337,6 +368,52 @@ class StreamActivity : AppCompatActivity(), View.OnSystemUiVisibilityChangeListe
 
 	override fun dispatchKeyEvent(event: KeyEvent) = viewModel.input.dispatchKeyEvent(event) || super.dispatchKeyEvent(event)
 	override fun onGenericMotionEvent(event: MotionEvent) = viewModel.input.onGenericMotionEvent(event) || super.onGenericMotionEvent(event)
+	
+	private fun setupControllerPresentation() {
+		// 检查是否启用了外接控制器显示
+		if (viewModel.onScreenControlsEnabled.value == true) {
+			// 获取DisplayManager服务
+			val displayManager = getSystemService(DISPLAY_SERVICE) as DisplayManager
+			
+			// 获取所有显示设备
+			val displays = displayManager.getDisplays()
+			
+			// 检查是否有第二屏幕（索引为1的显示器）
+			if (displays.size > 1) {
+				// 在第二个显示器上创建Presentation
+				controllerPresentation = ControllerPresentation(
+					this,
+					displays[1],
+					viewModel
+				)
+				
+				try {
+					controllerPresentation?.show()
+					// 隐藏主Activity中的控制器Fragment
+					hideMainControlsFragment()
+				} catch (e: Exception) {
+					// 如果无法在第二屏幕上显示，则保留在主屏幕上
+					controllerPresentation = null
+					showMainControlsFragment()
+				}
+			}
+		} else {
+			// 如果没有启用外接控制器显示，则确保主Activity中的控制器Fragment可见
+			showMainControlsFragment()
+		}
+	}
+	
+	private fun hideMainControlsFragment() {
+		// 隐藏主Activity中的控制器Fragment
+		val fragment = supportFragmentManager.findFragmentById(R.id.controlsFragment)
+		fragment?.view?.visibility = View.GONE
+	}
+	
+	private fun showMainControlsFragment() {
+		// 显示主Activity中的控制器Fragment
+		val fragment = supportFragmentManager.findFragmentById(R.id.controlsFragment)
+		fragment?.view?.visibility = View.VISIBLE
+	}
 }
 
 enum class TransformMode

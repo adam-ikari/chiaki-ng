@@ -37,6 +37,11 @@ abstract class TouchControlsFragment : Fragment()
 		controllerStateProxy.flatMap { it }
 
 	var onScreenControlsEnabled: LiveData<Boolean>? = null
+	
+	// 添加一个方法来设置控件可见性，用于在Presentation中使用
+	fun setControlsVisibility(visible: Boolean) {
+		view?.visibility = if(visible) View.VISIBLE else View.GONE
+	}
 }
 
 class DefaultTouchControlsFragment : TouchControlsFragment()
@@ -56,37 +61,7 @@ class DefaultTouchControlsFragment : TouchControlsFragment()
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{
 		super.onViewCreated(view, savedInstanceState)
-		binding.dpadView.stateChangeCallback = this::dpadStateChanged
-		binding.crossButtonView.buttonPressedCallback = buttonStateChanged(ControllerState.BUTTON_CROSS)
-		binding.moonButtonView.buttonPressedCallback = buttonStateChanged(ControllerState.BUTTON_MOON)
-		binding.pyramidButtonView.buttonPressedCallback = buttonStateChanged(ControllerState.BUTTON_PYRAMID)
-		binding.boxButtonView.buttonPressedCallback = buttonStateChanged(ControllerState.BUTTON_BOX)
-		binding.l1ButtonView.buttonPressedCallback = buttonStateChanged(ControllerState.BUTTON_L1)
-		binding.r1ButtonView.buttonPressedCallback = buttonStateChanged(ControllerState.BUTTON_R1)
-		binding.l3ButtonView.buttonPressedCallback = buttonStateChanged(ControllerState.BUTTON_L3)
-		binding.r3ButtonView.buttonPressedCallback = buttonStateChanged(ControllerState.BUTTON_R3)
-		binding.optionsButtonView.buttonPressedCallback = buttonStateChanged(ControllerState.BUTTON_OPTIONS)
-		binding.shareButtonView.buttonPressedCallback = buttonStateChanged(ControllerState.BUTTON_SHARE)
-		binding.psButtonView.buttonPressedCallback = buttonStateChanged(ControllerState.BUTTON_PS)
-
-		binding.l2ButtonView.buttonPressedCallback = { ownControllerState = ownControllerState.copy().apply { l2State = if(it) 255U else 0U } }
-		binding.r2ButtonView.buttonPressedCallback = { ownControllerState = ownControllerState.copy().apply { r2State = if(it) 255U else 0U } }
-
-		val quantizeStick = { f: Float ->
-			(Short.MAX_VALUE * f).toInt().toShort()
-		}
-
-		binding.leftAnalogStickView.stateChangedCallback = { ownControllerState = ownControllerState.copy().apply {
-			leftX = quantizeStick(it.x)
-			leftY = quantizeStick(it.y)
-		}}
-
-		binding.rightAnalogStickView.stateChangedCallback = { ownControllerState = ownControllerState.copy().apply {
-			rightX = quantizeStick(it.x)
-			rightY = quantizeStick(it.y)
-		}}
-
-		onScreenControlsEnabled?.observe(viewLifecycleOwner, Observer {
+		touchpadOnlyEnabled?.observe(viewLifecycleOwner, Observer {
 			view.visibility = if(it) View.VISIBLE else View.GONE
 		})
 	}
