@@ -64,10 +64,15 @@ jobs:
     - name: Make Gradle executable
       run: chmod +x ./android/gradlew
 
-    - name: Build with Gradle (with detailed logging)
+    - name: Update local.properties for NDK path
+      run: |
+        echo "ndk.dir=$ANDROID_HOME/ndk/21.4.7075529" >> android/local.properties
+        cat android/local.properties
+
+    - name: Build with Gradle
       run: |
         cd android
-        ./gradlew assembleDebug --no-daemon --stacktrace --info
+        ./gradlew assembleDebug --no-daemon --stacktrace
       env:
         ANDROID_HOME: ${{ env.ANDROID_HOME }}
         ANDROID_NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/21.4.7075529
