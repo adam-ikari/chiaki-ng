@@ -56,6 +56,11 @@ jobs:
           sudo chmod +x /usr/local/bin/protoc
         fi
 
+    - name: Apply oboe patches for Android build
+      run: |
+        chmod +x scripts/apply-oboe-patches.sh
+        ./scripts/apply-oboe-patches.sh
+
     - name: Make Gradle executable
       run: chmod +x ./android/gradlew
 
