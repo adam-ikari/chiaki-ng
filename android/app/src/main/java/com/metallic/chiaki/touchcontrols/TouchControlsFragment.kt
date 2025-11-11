@@ -37,6 +37,7 @@ abstract class TouchControlsFragment : Fragment()
 		controllerStateProxy.flatMap { it }
 
 	var onScreenControlsEnabled: LiveData<Boolean>? = null
+	open var touchpadOnlyEnabled: LiveData<Boolean>? = null
 	
 	// 添加一个方法来设置控件可见性，用于在Presentation中使用
 	fun setControlsVisibility(visible: Boolean) {

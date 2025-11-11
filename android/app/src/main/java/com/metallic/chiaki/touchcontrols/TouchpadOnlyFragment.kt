@@ -13,7 +13,7 @@ import io.reactivex.rxkotlin.Observables.combineLatest
 
 class TouchpadOnlyFragment : TouchControlsFragment()
 {
-	var touchpadOnlyEnabled: LiveData<Boolean>? = null
+	override var touchpadOnlyEnabled: LiveData<Boolean>? = null
 
 	private var _binding: FragmentTouchpadOnlyBinding? = null
 	private val binding get() = _binding!!
@@ -30,14 +30,8 @@ class TouchpadOnlyFragment : TouchControlsFragment()
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{
 		super.onViewCreated(view, savedInstanceState)
-		// 检查是否有viewLifecycleOwner，如果没有则直接设置可见性
-		if (::viewLifecycleOwner.isInitialized) {
-			touchpadOnlyEnabled?.observe(viewLifecycleOwner, Observer {
-				view.visibility = if(it) View.VISIBLE else View.GONE
-			})
-		} else {
-			// 在Presentation中使用时，直接根据设置显示控件
-			view.visibility = if(touchpadOnlyEnabled?.value == true) View.VISIBLE else View.GONE
+		touchpadOnlyEnabled?.observe(viewLifecycleOwner) { enabled ->
+			view.visibility = if(enabled) View.VISIBLE else View.GONE
 		}
 	}
 

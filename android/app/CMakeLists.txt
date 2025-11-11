@@ -23,3 +23,9 @@ target_link_libraries(chiaki-jni "${ANDROID_LIB_LOG}" "${ANDROID_LIB_MEDIANDK}" 
 
 add_subdirectory(src/main/cpp/oboe)
 target_link_libraries(chiaki-jni oboe)
+target_compile_definitions(oboe PRIVATE -D__STDC_VERSION__=201112L -D_GLIBCXX_USE_C99_ASSERT=1)
+target_compile_options(oboe PRIVATE -Wno-error)
+target_compile_definitions(oboe PRIVATE -DGLIBCXX_USE_C99=1)
+
+# 设置环境变量以修复OpenSSL配置问题
+set(ENV{ANDROID_NDK_ROOT} ${ANDROID_NDK})

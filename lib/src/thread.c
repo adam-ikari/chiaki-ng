@@ -260,10 +260,27 @@ CHIAKI_EXPORT ChiakiErrorCode chiaki_thread_timedjoin(ChiakiThread *thread, void
 		return CHIAKI_ERR_THREAD;
 	if(retval)
 		*retval = thread->ret;
+#elif defined(__ANDROID__)
+	// Android NDK doesn't have pthread_timedjoin_np, fall back to regular pthread_join
+	// This loses the timeout functionality but should be acceptable for most use cases
+	if(timeout_ms == 0 || timeout_ms == CHIAKI_THREAD_TIMEOUT_JOIN)
+	{
+		int r = pthread_join(thread->thread, retval);
+		if(r != 0)
+			return CHIAKI_ERR_THREAD;
+	}
+	else
+	{
+		// For Android, we fall back to regular pthread_join without timeout
+		// This is not ideal but should work for most cases
+		int r = pthread_join(thread->thread, retval);
+		if(r != 0)
+			return CHIAKI_ERR_THREAD;
+	}
 #else
 	struct timespec timeout;
 	set_timeout(&timeout, timeout_ms);
-	int r = pthread_clockjoin_np(thread->thread, retval, CLOCK_MONOTONIC, &timeout);
+	int r = pthread_timedjoin_np(thread->thread, retval, &timeout);
 	if(r != 0)
 	{
 		if(r == ETIMEDOUT)

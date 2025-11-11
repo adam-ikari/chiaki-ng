@@ -40,9 +40,12 @@ set(HEADER_FILES
 		include/chiaki/opusencoder.h
 		include/chiaki/orientation.h
 		include/chiaki/bitstream.h
-		include/chiaki/remote/holepunch.h
 		include/chiaki/remote/rudp.h
 		include/chiaki/remote/rudpsendbuffer.h)
+
+if(CHIAKI_ENABLE_HOLEPUNCH)
+	list(APPEND HEADER_FILES include/chiaki/remote/holepunch.h)
+endif()
 
 set(SOURCE_FILES
 		src/common.c
@@ -85,9 +88,12 @@ set(SOURCE_FILES
 		src/opusencoder.c
 		src/orientation.c
 		src/bitstream.c
-		src/remote/holepunch.c
 		src/remote/rudp.c
 		src/remote/rudpsendbuffer.c)
+
+if(CHIAKI_ENABLE_HOLEPUNCH)
+	list(APPEND SOURCE_FILES src/remote/holepunch.c)
+endif()
 
 if(CHIAKI_ENABLE_FFMPEG_DECODER)
 	list(APPEND HEADER_FILES include/chiaki/ffmpegdecoder.h)
@@ -134,20 +140,27 @@ target_include_directories(chiaki-lib PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/includ
 find_package(Threads REQUIRED)
 target_link_libraries(chiaki-lib Threads::Threads)
 
-if (CHIAKI_IS_SWITCH)
-	find_library(JSONC_LIB json-c ${PORTLIBS}/lib)
-	target_link_libraries(chiaki-lib ${JSONC_LIB})
-	target_include_directories(chiaki-lib PUBLIC "${PORTLIBS}/include/json-c")
-else()
-	find_package(PkgConfig REQUIRED)
-	pkg_search_module(json-c REQUIRED json-c IMPORTED_TARGET)
-	target_include_directories(chiaki-lib PRIVATE ${json-c_INCLUDE_DIRS})
-	target_link_libraries(chiaki-lib PkgConfig::json-c)
+if(CHIAKI_ENABLE_HOLEPUNCH)
+	if (CHIAKI_IS_SWITCH)
+		find_library(JSONC_LIB json-c ${PORTLIBS}/lib)
+		target_link_libraries(chiaki-lib ${JSONC_LIB})
+		target_include_directories(chiaki-lib PUBLIC "${PORTLIBS}/include/json-c")
+	else()
+		find_package(PkgConfig REQUIRED)
+		pkg_search_module(json-c REQUIRED json-c IMPORTED_TARGET)
+		target_include_directories(chiaki-lib PRIVATE ${json-c_INCLUDE_DIRS})
+		target_link_libraries(chiaki-lib PkgConfig::json-c)
+	endif()
 endif()
 
 find_package(PkgConfig REQUIRED)
-pkg_search_module(MINIUPNPC REQUIRED miniupnpc IMPORTED_TARGET)
-target_link_libraries(chiaki-lib PkgConfig::MINIUPNPC)
+if(NOT CHIAKI_ENABLE_UPNP)
+    # UPnP is disabled, skip miniupnpc library
+    message(STATUS "UPnP support is disabled")
+else()
+    pkg_search_module(MINIUPNPC REQUIRED miniupnpc IMPORTED_TARGET)
+    target_link_libraries(chiaki-lib PkgConfig::MINIUPNPC)
+endif()
 
 target_link_libraries(chiaki-lib CURL::libcurl)
 

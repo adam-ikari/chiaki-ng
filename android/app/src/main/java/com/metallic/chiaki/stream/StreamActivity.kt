@@ -227,23 +227,6 @@ class StreamActivity : AppCompatActivity(), View.OnSystemUiVisibilityChangeListe
 				or View.SYSTEM_UI_FLAG_FULLSCREEN)
 	}
 	
-	private fun setupControllerPresentation() {
-		// 检查是否有第二屏幕
-		val displayManager = getSystemService(DISPLAY_SERVICE) as DisplayManager
-		val displays = displayManager.displays
-		
-		// 如果有第二屏幕且当前没有创建Presentation
-		if (displays.size > 1 && controllerPresentation == null) {
-			try {
-				controllerPresentation = ControllerPresentation(this, displays[1], viewModel)
-				controllerPresentation?.show()
-			} catch (e: Exception) {
-				// 如果创建Presentation失败，忽略错误
-				controllerPresentation = null
-			}
-		}
-	}
-
 	private var dialogContents: DialogContents? = null
 	private var dialog: AlertDialog? = null
 		set(value)

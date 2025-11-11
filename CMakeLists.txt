@@ -32,7 +32,8 @@ option(CHIAKI_LIB_OPENSSL_EXTERNAL_PROJECT "Use OpenSSL as CMake external projec
 option(CHIAKI_GUI_ENABLE_SDL_GAMECONTROLLER "Use SDL Gamecontroller for Input" ON)
 option(CHIAKI_CLI_ARGP_STANDALONE "Search for standalone argp lib for CLI" OFF)
 option(CHIAKI_ENABLE_STEAM_SHORTCUT "Add ability to create Steam shortcut" ON)
-tri_option(CHIAKI_USE_SYSTEM_JERASURE "Use system-provided jerasure instead of submodule" AUTO)
+set(CHIAKI_USE_SYSTEM_JERASURE "OFF" CACHE STRING "Use system-provided jerasure instead of submodule" FORCE)
+set(CHIAKI_ENABLE_HOLEPUNCH "OFF" CACHE STRING "Enable holepunch functionality" FORCE)
 tri_option(CHIAKI_USE_SYSTEM_NANOPB "Use system-provided nanopb instead of submodule" AUTO)
 tri_option(CHIAKI_USE_SYSTEM_CURL "Use system-provided curl instead of submodule. Has to be built with experimental WebSocket support!" OFF)
 
@@ -144,6 +145,13 @@ if(CHIAKI_LIB_ENABLE_MBEDTLS)
 			GIT_PROGRESS TRUE
 		)
 		FetchContent_MakeAvailable(mbedtls)
+		
+		# 添加编译选项来解决mbedTLS中-Wunused-but-set-variable和-Wdocumentation警告
+		if(ANDROID)
+			target_compile_options(mbedtls PRIVATE -Wno-unused-but-set-variable -Wno-documentation)
+			target_compile_options(mbedcrypto PRIVATE -Wno-unused-but-set-variable -Wno-documentation)
+			target_compile_options(mbedx509 PRIVATE -Wno-unused-but-set-variable -Wno-documentation)
+		endif()
 	endif()
 endif()
 

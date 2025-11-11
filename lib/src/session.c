@@ -276,7 +276,9 @@ error_state_cond:
 	chiaki_cond_fini(&session->state_cond);
 error:
 	if(session->holepunch_session)
+#ifdef CHIAKI_ENABLE_HOLEPUNCH
 		chiaki_holepunch_session_fini(session->holepunch_session);
+#endif
 	return err;
 }
 
@@ -294,7 +296,9 @@ CHIAKI_EXPORT void chiaki_session_fini(ChiakiSession *session)
 	if(session->rudp)
 		chiaki_rudp_fini(session->rudp);
 	if(session->holepunch_session)
+#ifdef CHIAKI_ENABLE_HOLEPUNCH
 		chiaki_holepunch_session_fini(session->holepunch_session);
+#endif
 	chiaki_stop_pipe_fini(&session->stop_pipe);
 	chiaki_cond_fini(&session->state_cond);
 	chiaki_mutex_fini(&session->state_mutex);
@@ -442,6 +446,7 @@ static void *session_thread_func(void *arg)
 
 	if(session->holepunch_session)
 	{
+#ifdef CHIAKI_ENABLE_HOLEPUNCH
 		chiaki_socket_t *rudp_sock = chiaki_get_holepunch_sock(session->holepunch_session, CHIAKI_HOLEPUNCH_PORT_TYPE_CTRL);
 		session->rudp = chiaki_rudp_init(rudp_sock, session->log);
 		if(!session->rudp)
@@ -470,6 +475,7 @@ static void *session_thread_func(void *arg)
 		chiaki_regist_stop(&regist);
 		chiaki_regist_fini(&regist);
 		CHECK_STOP(quit);
+#endif
 	}
 	if(session->auto_regist)
 	{
@@ -559,6 +565,7 @@ static void *session_thread_func(void *arg)
 	}
 
 	chiaki_socket_t *data_sock = NULL;
+#ifdef CHIAKI_ENABLE_HOLEPUNCH
 	if(session->rudp)
 	{
 		ChiakiErrorCode err = holepunch_session_create_offer(session->holepunch_session);
@@ -587,6 +594,7 @@ static void *session_thread_func(void *arg)
 		err = chiaki_cond_timedwait_pred(&session->state_cond, &session->state_mutex, SESSION_EXPECT_TIMEOUT_MS, session_check_state_pred_ctrl_start, session);
 		CHECK_STOP(quit_ctrl);
 	}
+#endif
 
 	if(!session->ctrl_session_id_received)
 	{
@@ -922,8 +930,10 @@ static ChiakiErrorCode session_thread_request_session(ChiakiSession *session, Ch
 	int port = SESSION_PORT;
 	if(session->holepunch_session)
 	{
+#ifdef CHIAKI_ENABLE_HOLEPUNCH
 		chiaki_get_ps_selected_addr(session->holepunch_session, session->connect_info.hostname);
 		port = chiaki_get_ps_ctrl_port(session->holepunch_session);
+#endif
 	}
 	int request_len = snprintf(send_buf, sizeof(send_buf), session_request_fmt,
 			path, session->connect_info.hostname, port, regist_key_hex, rp_version_str);

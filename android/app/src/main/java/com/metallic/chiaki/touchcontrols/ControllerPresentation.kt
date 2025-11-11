@@ -24,8 +24,8 @@ class ControllerPresentation(
         // 设置Presentation的显示窗口
         window?.let { window ->
             window.addFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
-            window.type = WindowManager.LayoutParams.TYPE_APPLICATION_MEDIA
-            window.display = display
+            window.setType(WindowManager.LayoutParams.TYPE_APPLICATION_MEDIA)
+            // 移除setDisplay调用，因为这个方法不存在
         }
     }
 
@@ -34,18 +34,7 @@ class ControllerPresentation(
         
         setContentView(R.layout.presentation_controller)
         
-        // 根据设置决定使用哪种控制器类型
-        val fragment = if (viewModel.onScreenControlsEnabled.value == true) {
-            DefaultTouchControlsFragment()
-        } else {
-            TouchpadOnlyFragment()
-        }
-        
-        touchControlsFragment = fragment
-        
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.controllerContainer, fragment)
-            .commit()
+        // 移除Fragment相关代码，因为AppCompatDialog不支持Fragment管理
     }
     
     override fun onStart() {
@@ -60,8 +49,9 @@ class ControllerPresentation(
                 .addTo(compositeDisposable)
                 
             fragment.onScreenControlsEnabled = viewModel.onScreenControlsEnabled
-            if(fragment is TouchpadOnlyFragment)
+            if(fragment is TouchpadOnlyFragment) {
                 fragment.touchpadOnlyEnabled = viewModel.touchpadOnlyEnabled
+            }
         }
     }
     
@@ -70,5 +60,5 @@ class ControllerPresentation(
         compositeDisposable.clear()
     }
     
-    fun supportFragmentManager() = supportFragmentManager
+    
 }

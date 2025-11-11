@@ -36,7 +36,20 @@ android {
                         "-DCHIAKI_ENABLE_FFMPEG_DECODER=OFF",
                         "-DCHIAKI_ENABLE_PI_DECODER=OFF",
                         "-DCHIAKI_LIB_ENABLE_OPUS=OFF",
-                        "-DCHIAKI_LIB_OPENSSL_EXTERNAL_PROJECT=ON"
+                        "-DCHIAKI_LIB_OPENSSL_EXTERNAL_PROJECT=OFF",
+                        "-DCHIAKI_LIB_ENABLE_MBEDTLS=ON",
+                        "-DCHIAKI_LIB_MBEDTLS_EXTERNAL_PROJECT=ON",
+                        "-DCHIAKI_ENABLE_STEAM_SHORTCUT=OFF",
+                        "-DCHIAKI_ENABLE_UPNP=OFF",
+                        "-DCHIAKI_ENABLE_HOLEPUNCH=OFF",
+                        "-DCHIAKI_ENABLE_STEAMDECK_NATIVE=OFF",
+                        "-DBUILD_CURL_EXE=OFF",
+                        "-DBUILD_CURL_TESTS=OFF",
+                        "-DCURL_USE_OPENSSL=OFF",
+                        "-DCURL_DISABLE_TESTS=ON",
+                        "-DBUILD_SHARED_LIBS=OFF",
+                        "-DCMAKE_C_FLAGS=-Wno-unused-but-set-variable -Wno-error=unused-but-set-variable",
+                        "-DCMAKE_CXX_FLAGS=-Wno-unused-but-set-variable -Wno-error=unused-but-set-variable"
             }
         }
     }

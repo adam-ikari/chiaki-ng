@@ -1,0 +1,11 @@
+# OpenSSL工具链配置
+set(OPENSSL_ROOT_DIR "/usr")
+set(OPENSSL_INCLUDE_DIR "/usr/include/x86_64-linux-gnu/openssl")
+set(OPENSSL_CRYPTO_LIBRARY "/usr/lib/x86_64-linux-gnu/libcrypto.so.1.1")
+set(OPENSSL_SSL_LIBRARY "/usr/lib/x86_64-linux-gnu/libssl.so.1.1")
+
+# 导出变量
+set(ENV{OPENSSL_ROOT_DIR} ${OPENSSL_ROOT_DIR})
+set(ENV{OPENSSL_INCLUDE_DIR} ${OPENSSL_INCLUDE_DIR})
+set(ENV{OPENSSL_CRYPTO_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY})
+set(ENV{OPENSSL_SSL_LIBRARY} ${OPENSSL_SSL_LIBRARY})

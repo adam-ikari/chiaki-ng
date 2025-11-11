@@ -110,6 +110,8 @@ static inline bool chiaki_codec_is_hdr(ChiakiCodec codec)
 	return codec == CHIAKI_CODEC_H265_HDR;
 }
 
+#define CHIAKI_THREAD_TIMEOUT_JOIN ((uint64_t)-1)
+
 CHIAKI_EXPORT const char *chiaki_codec_name(ChiakiCodec codec);
 
 #ifdef __cplusplus

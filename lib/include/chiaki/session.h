@@ -3,22 +3,42 @@
 #ifndef CHIAKI_SESSION_H
 #define CHIAKI_SESSION_H
 
-#include "streamconnection.h"
 #include "common.h"
-#include "thread.h"
 #include "log.h"
 #include "ctrl.h"
-#include "rpcrypt.h"
 #include "takion.h"
-#include "ecdh.h"
+#include "video.h"
 #include "audio.h"
-#include "controller.h"
-#include "stoppipe.h"
-#include "remote/holepunch.h"
-#include "remote/rudp.h"
+#include "session.h"
 #include "regist.h"
+#include "time.h"
+#include "feedback.h"
+#include "controller.h"
+#include "seqnum.h"
+#include "congestioncontrol.h"
+#include "stoppipe.h"
+#include "reorderqueue.h"
+#include "discoveryservice.h"
+#include "feedbacksender.h"
+#include "orientation.h"
+#include "sock.h"
+#include "thread.h"
+#include "base64.h"
+#include "http.h"
+#include "launchspec.h"
+#include "rpcrypt.h"
+#include "gkcrypt.h"
+#include "ecdh.h"
+#include "streamconnection.h"
+#include "remote/rudp.h"
+#include "remote/rudpsendbuffer.h"
+
+#ifdef CHIAKI_ENABLE_HOLEPUNCH
+#include "remote/holepunch.h"
+#endif
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
