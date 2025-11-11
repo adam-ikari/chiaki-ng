@@ -26,7 +26,7 @@ jobs:
 
     - name: Install Android SDK packages
       run: |
-        sdkmanager "platform-tools" "platforms;android-30" "build-tools;34.0.0" "ndk;28.1.13356709"
+        sdkmanager "platform-tools" "platforms;android-21" "platforms;android-30" "build-tools;30.0.2" "ndk;28.1.13356709"
       env:
         SKIP_JDK_VERSION_CHECK: true
 
