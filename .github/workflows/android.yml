@@ -64,10 +64,10 @@ jobs:
     - name: Make Gradle executable
       run: chmod +x ./android/gradlew
 
-    - name: Build with Gradle
+    - name: Build with Gradle (with detailed logging)
       run: |
         cd android
-        ./gradlew assembleDebug --no-daemon
+        ./gradlew assembleDebug --no-daemon --stacktrace --info
       env:
         ANDROID_HOME: ${{ env.ANDROID_HOME }}
         ANDROID_NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/21.4.7075529
