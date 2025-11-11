@@ -26,12 +26,15 @@ android {
         targetSdkVersion 30
         versionCode 11
         versionName chiakiVersion
+        // Temporarily disable NDK build to test if this is the source of the issue
+        /*
         externalNativeBuild {
-        cmake {
-            arguments "-DCMAKE_TOOLCHAIN_FILE=../cmake/custom-config.cmake"
-            abiFilters 'armeabi-v7a', 'arm64-v8a'
+            cmake {
+                arguments "-DCMAKE_TOOLCHAIN_FILE=../cmake/custom-config.cmake"
+                abiFilters 'armeabi-v7a', 'arm64-v8a'
+            }
         }
-    }
+        */
     }
     buildFeatures {
         viewBinding true
@@ -43,12 +46,14 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    /*
     externalNativeBuild {
         cmake {
             version "3.10.2+"
             path rootCMakeLists
         }
     }
+    */
     signingConfigs {
         release
     }
