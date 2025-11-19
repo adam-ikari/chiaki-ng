@@ -31,7 +31,7 @@ android {
         // 配置NDK构建
         externalNativeBuild {
             cmake {
-                version "3.18.1" // 使用与项目匹配的CMake版本
+                version "3.31.5" // 使用系统中可用的CMake版本
                 cppFlags "-std=c++14"
                 arguments "-DANDROID_STL=c++_shared",
                         "-DCHIAKI_ENABLE_ANDROID=ON",
