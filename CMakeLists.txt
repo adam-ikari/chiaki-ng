@@ -82,9 +82,14 @@ if(CHIAKI_USE_SYSTEM_JERASURE)
 	endif()
 endif()
 
-if(CHIAKI_ENABLE_GUI)
+if(CHIAKI_ENABLE_GUI AND NOT CHIAKI_ENABLE_ANDROID)
 	find_package(PkgConfig REQUIRED)
 	pkg_check_modules(LIBPLACEBO REQUIRED libplacebo IMPORTED_TARGET)
+endif()
+
+# For Android, we don't need GUI-specific dependencies
+if(CHIAKI_ENABLE_GUI AND CHIAKI_ENABLE_ANDROID)
+	message(STATUS "GUI enabled for Android build")
 endif()
 
 if(CHIAKI_USE_SYSTEM_CURL)
@@ -239,7 +244,7 @@ else()
 	message(STATUS "Steamdeck native gyro and hatpics disabled")
 endif()
 
-if(CHIAKI_ENABLE_GUI)
+if(CHIAKI_ENABLE_GUI AND NOT CHIAKI_ENABLE_ANDROID)
 	find_package(SDL2 MODULE REQUIRED)
 endif()
 
@@ -272,7 +277,7 @@ else()
 	message(STATUS "Setsu disabled")
 endif()
 
-if(CHIAKI_ENABLE_GUI)
+if(CHIAKI_ENABLE_GUI AND NOT CHIAKI_ENABLE_ANDROID)
 	add_subdirectory(gui)
 endif()
 
