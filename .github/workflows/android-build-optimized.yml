@@ -22,6 +22,11 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
+    - name: Accept Android SDK licenses
+      run: |
+        yes | sdkmanager --licenses || true
+        echo "y" | sdkmanager --licenses || true
+
     - name: Set up Android SDK
       uses: android-actions/setup-android@v3
       with:
@@ -30,10 +35,6 @@ jobs:
           build-tools;30.0.2
           ndk;21.4.7075529
           cmake;3.31.5
-        accept-android-sdk-licenses: true
-
-    - name: Accept remaining Android SDK licenses
-      run: echo y | sdkmanager --licenses || true
 
     - name: Install system dependencies
       run: |
