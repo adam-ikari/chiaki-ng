@@ -22,22 +22,20 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    - name: Accept Android SDK licenses first
+    - name: Set up Android SDK
       run: |
-        export JAVA_HOME=$JAVA_HOME_17_X64
-        yes | sdkmanager --licenses || true
-        echo "y" | sdkmanager --licenses || true
-      continue-on-error: true
-
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
-      with:
-        packages: |
-          build-tools;30.0.2
-          platform-tools
-          platforms;android-30
-          ndk;21.4.7075529
-          cmake;3.31.5
+        # Install Android SDK Command-line Tools
+        cd $RUNNER_TEMP
+        wget https://dl.google.com/android/repository/commandlinetools-linux-12266719_latest.zip
+        unzip commandlinetools-linux-12266719_latest.zip
+        mkdir -p $ANDROID_HOME/cmdline-tools/latest
+        mv cmdline-tools/* $ANDROID_HOME/cmdline-tools/latest/ 2>/dev/null || true
+        # Accept all licenses upfront
+        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+        # Install required packages
+        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-30" "build-tools;30.0.2" "ndk;21.4.7075529" "cmake;3.31.5"
+        # Set up environment variables
+        echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/21.4.7075529" >> $GITHUB_ENV
 
     - name: Install system dependencies
       run: |
