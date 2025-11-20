@@ -61,6 +61,7 @@ jobs:
         ANDROID_NDK_HOME: ${{ env.ANDROID_NDK_HOME }}
         GRADLE_OPTS: >-
           -Dkotlin.compiler.execution.strategy=in-process
+          -Dkapt.use.worker.api=false
           -Xmx2048m
           -XX:+UseG1GC
           -XX:+UseStringDeduplication

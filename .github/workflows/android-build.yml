@@ -53,12 +53,12 @@ jobs:
       run: |
         cd android
         echo "Building APK with specific flags to handle Java 17 module issues..."
-        # Use a different approach to skip the problematic kapt steps if they exist
         ./gradlew assembleDebug -xlint --no-daemon --info --stacktrace
       env:
         ANDROID_NDK_HOME: ${{ env.ANDROID_NDK_HOME }}
         GRADLE_OPTS: >-
           -Dkotlin.compiler.execution.strategy=in-process
+          -Dkapt.use.worker.api=false
           -Xmx2048m
           -XX:+UseG1GC
           -XX:+UseStringDeduplication

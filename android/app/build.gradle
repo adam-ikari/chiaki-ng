@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
+apply plugin: 'kotlin-kapt'
 
 def rootCMakeLists = "../../CMakeLists.txt"
 def rootCMakeListsContent = file(rootCMakeLists).text
@@ -110,5 +111,6 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
     implementation "androidx.room:room-rxjava2:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
     implementation "com.squareup.moshi:moshi:1.9.2"
 }
