@@ -70,7 +70,7 @@ data class SerializedSettings(
 	companion object
 	{
 		fun fromDatabase(db: AppDatabase) = Singles.zip(
-			db.registeredHostDao().getAll().firstOrError(),
+			db.registeredHostDao().getAllFlow().firstOrError(),
 			db.manualHostDao().getAll().firstOrError()
 		) { registeredHosts, manualHosts ->
 			SerializedSettings(

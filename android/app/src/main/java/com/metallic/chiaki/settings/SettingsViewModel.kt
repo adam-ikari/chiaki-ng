@@ -10,7 +10,7 @@ import com.metallic.chiaki.common.ext.toLiveData
 class SettingsViewModel(val database: AppDatabase, val preferences: Preferences): ViewModel()
 {
 	val registeredHostsCount by lazy {
-		database.registeredHostDao().count().toLiveData()
+		database.registeredHostDao().countFlow().toLiveData()
 	}
 
 	val bitrateAuto by lazy {

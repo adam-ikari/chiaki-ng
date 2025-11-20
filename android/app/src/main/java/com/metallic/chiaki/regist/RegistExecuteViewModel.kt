@@ -78,7 +78,7 @@ class RegistExecuteViewModel(val database: AppDatabase): ViewModel()
 	private fun registSuccess(host: RegistHost)
 	{
 		this.host = host
-		database.registeredHostDao().getByMac(MacAddress(host.serverMac))
+		database.registeredHostDao().getByMacFlow(MacAddress(host.serverMac))
 			.subscribeOn(Schedulers.io())
 			.observeOn(AndroidSchedulers.mainThread())
 			.doOnSuccess {

@@ -16,7 +16,7 @@ import io.reactivex.schedulers.Schedulers
 class EditManualConsoleViewModel(val database: AppDatabase, manualHostId: Long?): ViewModel()
 {
 	val registeredHosts by lazy {
-		database.registeredHostDao().getAll().observeOn(AndroidSchedulers.mainThread())
+		database.registeredHostDao().getAllFlow().observeOn(AndroidSchedulers.mainThread())
 			.doOnNext { hosts ->
 				val selectedHost = selectedRegisteredHost.value
 				if(selectedHost != null)
