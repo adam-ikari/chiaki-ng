@@ -3,6 +3,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'kotlin-kapt'
 
+repositories {
+    google()
+    mavenCentral()
+    maven { url "https://jcenter.bintray.com" }
+}
+
 def rootCMakeLists = "../../CMakeLists.txt"
 def rootCMakeListsContent = file(rootCMakeLists).text
 static def grepVersionComponent(content, varname) {
@@ -121,5 +127,13 @@ dependencies {
     }
     implementation('androidx.lifecycle:lifecycle-process:2.6.1') {
         force = true
+    }
+}
+
+kapt {
+    arguments {
+        arg("room.schemaLocation", "$projectDir/schemas".toString())
+        arg("room.incremental", "true")
+        arg("room.expandProjection", "true")
     }
 }
