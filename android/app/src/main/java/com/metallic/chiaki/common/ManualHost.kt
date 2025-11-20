@@ -32,7 +32,7 @@ data class ManualHostAndRegisteredHost(
 interface ManualHostDao
 {
 	@Query("SELECT * FROM manual_host WHERE id = :id")
-	fun getById(id: Long): Single<ManualHost>
+	suspend fun getById(id: Long): ManualHost?
 
 	@Query("""SELECT
 			manual_host.id as manual_host_id,
@@ -40,20 +40,20 @@ interface ManualHostDao
 			manual_host.registered_host as manual_host_registered_host,
 			registered_host.*
 		FROM manual_host LEFT OUTER JOIN registered_host ON manual_host.registered_host = registered_host.id WHERE manual_host.id = :id""")
-	fun getByIdWithRegisteredHost(id: Long): Single<ManualHostAndRegisteredHost>
+	suspend fun getByIdWithRegisteredHost(id: Long): ManualHostAndRegisteredHost?
 
 	@Query("SELECT * FROM manual_host")
-	fun getAll(): Flowable<List<ManualHost>>
+	suspend fun getAll(): List<ManualHost>
 
 	@Query("UPDATE manual_host SET registered_host = :registeredHostId WHERE id = :manualHostId")
-	fun assignRegisteredHost(manualHostId: Long, registeredHostId: Long?): Completable
+	suspend fun assignRegisteredHost(manualHostId: Long, registeredHostId: Long?): Int
 
 	@Insert
-	fun insert(host: ManualHost): Completable
+	suspend fun insert(host: ManualHost): Long
 
 	@Delete
-	fun delete(host: ManualHost): Completable
+	suspend fun delete(host: ManualHost): Int
 
 	@Update
-	fun update(host: ManualHost): Completable
+	suspend fun update(host: ManualHost): Int
 }
