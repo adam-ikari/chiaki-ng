@@ -122,4 +122,11 @@ dependencies {
     implementation('androidx.lifecycle:lifecycle-process:2.6.1') {
         force = true
     }
+    // 解决Kotlin库冲突
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version") {
+        force = true
+    }
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version") {
+        force = true
+    }
 }
