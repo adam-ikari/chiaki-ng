@@ -20,7 +20,7 @@ println("Determined Chiaki Version: $chiakiVersion")
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
-    ndkVersion "21.4.7075529"  // 明确指定NDK版本以避免警告
+    ndkVersion "25.1.8937393"  // 使用与Gradle插件7.x兼容的NDK版本
     defaultConfig {
         applicationId "com.metallic.chiaki"
         minSdkVersion 21
