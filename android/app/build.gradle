@@ -17,6 +17,20 @@ def chiakiVersionPatch = grepVersionComponent(rootCMakeListsContent, "CHIAKI_VER
 def chiakiVersion = "$chiakiVersionMajor.$chiakiVersionMinor.$chiakiVersionPatch"
 println("Determined Chiaki Version: $chiakiVersion")
 
+// 在android块之前添加这个配置来全局排除冲突的Kotlin依赖
+configurations.all {
+    resolutionStrategy {
+        eachDependency { details ->
+            if (details.requested.group == 'org.jetbrains.kotlin') {
+                if (details.requested.name.startsWith('kotlin-stdlib')) {
+                    details.useVersion kotlin_version
+                    details.because "统一Kotlin stdlib版本以避免冲突"
+                }
+            }
+        }
+    }
+}
+
 android {
     compileSdkVersion 33
     buildToolsVersion "30.0.2"
