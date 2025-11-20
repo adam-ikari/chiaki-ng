@@ -21,9 +21,9 @@ data class RegisteredHost(
 	@ColumnInfo(name = "ap_name") val apName: String?,
 	@ColumnInfo(name = "server_mac") val serverMac: MacAddress,
 	@ColumnInfo(name = "server_nickname") val serverNickname: String?,
-	@ColumnInfo(name = "rp_regist_key", typeAffinity = BLOB) val rpRegistKey: ByteArray, // CHIAKI_SESSION_AUTH_SIZE
+	@ColumnInfo(name = "rp_regist_key", typeAffinity = ColumnInfo.BLOB) val rpRegistKey: ByteArray, // CHIAKI_SESSION_AUTH_SIZE
 	@ColumnInfo(name = "rp_key_type") val rpKeyType: Int,
-	@ColumnInfo(name = "rp_key", typeAffinity = BLOB) val rpKey: ByteArray // 0x10
+	@ColumnInfo(name = "rp_key", typeAffinity = ColumnInfo.BLOB) val rpKey: ByteArray // 0x10
 )
 {
 	constructor(registHost: RegistHost) : this(
