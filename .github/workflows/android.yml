@@ -30,10 +30,10 @@ jobs:
       env:
         SKIP_JDK_VERSION_CHECK: true
 
-    - name: Set up JDK 8 (for building)
+    - name: Set up JDK 17 (for building - newer Gradle requires JDK 11+)
       uses: actions/setup-java@v4
       with:
-        java-version: '8'
+        java-version: '17'
         distribution: 'temurin'
 
     - name: Set up Python
