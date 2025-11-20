@@ -15,7 +15,7 @@ class SettingsRegisteredHostsViewModel(val database: AppDatabase): ViewModel()
 	private val disposable = CompositeDisposable()
 
 	val registeredHosts by lazy {
-		database.registeredHostDao().getAllFlow().toLiveData()
+		kotlinx.coroutines.flow.flow { emit(database.registeredHostDao().getAll()) }.toLiveData()
 	}
 
 	fun deleteHost(host: RegisteredHost)

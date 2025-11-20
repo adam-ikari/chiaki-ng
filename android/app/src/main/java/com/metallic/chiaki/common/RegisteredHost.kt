@@ -82,37 +82,19 @@ data class RegisteredHost(
 interface RegisteredHostDao
 {
 	@Query("SELECT * FROM registered_host")
-	fun getAllFlow(): Flowable<List<RegisteredHost>>
-
-	@Query("SELECT * FROM registered_host")
 	suspend fun getAll(): List<RegisteredHost>
-
-	@Query("SELECT * FROM registered_host WHERE server_mac == :mac LIMIT 1")
-	fun getByMacFlow(mac: MacAddress): Maybe<RegisteredHost>
 
 	@Query("SELECT * FROM registered_host WHERE server_mac == :mac LIMIT 1")
 	suspend fun getByMac(mac: MacAddress): RegisteredHost?
 
 	@Query("DELETE FROM registered_host WHERE server_mac == :mac")
-	fun deleteByMacFlow(mac: MacAddress): Completable
-
-	@Query("DELETE FROM registered_host WHERE server_mac == :mac")
 	suspend fun deleteByMac(mac: MacAddress): Int
-
-	@Delete
-	fun deleteFlow(host: RegisteredHost): Completable
 
 	@Delete
 	suspend fun delete(host: RegisteredHost): Int
 
 	@Query("SELECT COUNT(*) FROM registered_host")
-	fun countFlow(): Flowable<Int>
-
-	@Query("SELECT COUNT(*) FROM registered_host")
 	suspend fun count(): Int
-
-	@Insert
-	fun insertFlow(host: RegisteredHost): Single<Long>
 
 	@Insert
 	suspend fun insert(host: RegisteredHost): Long

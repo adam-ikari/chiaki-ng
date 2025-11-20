@@ -28,7 +28,7 @@ class MainViewModel(val database: AppDatabase, val preferences: Preferences): Vi
 	val displayHosts by lazy {
 		Observables.combineLatest(
 			database.manualHostDao().getAll().toObservable(),
-			database.registeredHostDao().getAllFlow().toObservable(),
+			kotlinx.coroutines.flow.flow { emit(database.registeredHostDao().getAll()) }.toObservable(),
 			discoveryManager.discoveredHosts)
 			{ manualHosts, registeredHosts, discoveredHosts ->
 				val macRegisteredHosts = registeredHosts.associateBy { it.serverMac }
